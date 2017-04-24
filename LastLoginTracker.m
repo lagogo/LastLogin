@@ -11,6 +11,7 @@
 #import "LastLoginTracker.h"
 
 @interface LastLoginTracker ()
+@property (nonatomic, strong) NSUserDefaults *userDefaults;
 - (void)updateLabelStrings;
 @end
 
@@ -20,7 +21,7 @@
   static LastLoginTracker *sharedInstance = nil;
   static dispatch_once_t oncePredicate;
   dispatch_once(&oncePredicate, ^{
-  sharedInstance = [[self alloc] init];
+    sharedInstance = [[self alloc] init];
   });
 
   return sharedInstance;
@@ -30,7 +31,19 @@
   if(self = [super init]) {
 
     _loginAttempts = 0;
-    _lastLoginDate = !CFPreferencesCopyAppValue(CFSTR("lastLoginDate"), kPrefsID) ? [NSDate date] : CFBridgingRelease(CFPreferencesCopyAppValue(CFSTR("lastLoginDate"), kPrefsID));
+    _userDefaults = [[NSUserDefaults alloc] initWithSuiteName:@"com.cpdigitaldarkroom.lastlogin"];
+
+    _lastLoginDate = [_userDefaults objectForKey:@"lastLoginDate"];
+
+    [_userDefaults registerDefaults:@{
+      @"displaysActionLabel": @NO,
+      @"displaysActionLabel": @NO,
+      @"trackMesa": @NO,
+      @"lsString": kDefaultLS,
+      @"psString":kDefaultPS,
+      @"lsDateFormat" : kDefaultDateLS,
+      @"psDateFormat" : kDefaultDatePS
+    }];
 
     [self syncPrefs];
   }
@@ -38,9 +51,9 @@
 }
 
 - (void)syncPrefs {
-  _displayOnLS = !CFPreferencesCopyAppValue(CFSTR("displaysActionLabel"), kPrefsID) ? NO : [CFBridgingRelease(CFPreferencesCopyAppValue(CFSTR("displaysActionLabel"), kPrefsID)) boolValue];
-  _displayOnPS = !CFPreferencesCopyAppValue(CFSTR("displaysPasscodeLabel"), kPrefsID) ? NO : [CFBridgingRelease(CFPreferencesCopyAppValue(CFSTR("displaysPasscodeLabel"), kPrefsID)) boolValue];
-  _tracksMesaAttempts = !CFPreferencesCopyAppValue(CFSTR("trackMesa"), kPrefsID) ? NO : [CFBridgingRelease(CFPreferencesCopyAppValue(CFSTR("trackMesa"), kPrefsID)) boolValue];
+  _displayOnLS = [_userDefaults boolForKey:@"displaysActionLabel"];
+  _displayOnPS = [_userDefaults boolForKey:@"displaysActionLabel"];
+  _tracksMesaAttempts = [_userDefaults boolForKey:@"trackMesa"];
 
   [self updateLabelStrings];
 }
@@ -50,7 +63,7 @@
   _lastLoginDate = date;
   _loginAttempts = 0;
 
-  CFPreferencesSetAppValue((CFStringRef)@"lastLoginDate", (CFPropertyListRef)date, kPrefsID);
+  [_userDefaults setObject:date forKey:@"lastLoginDate"];
   [self updateLabelStrings];
 }
 
@@ -64,18 +77,18 @@
   _lockscreenString = nil;
   _passcodeString = nil;
 
-  _lockscreenString = !CFPreferencesCopyAppValue(CFSTR("lsString"), kPrefsID) ? kDefaultLS : CFBridgingRelease(CFPreferencesCopyAppValue(CFSTR("lsString"), kPrefsID));
-  _passcodeString = !CFPreferencesCopyAppValue(CFSTR("psString"), kPrefsID) ? kDefaultPS : CFBridgingRelease(CFPreferencesCopyAppValue(CFSTR("psString"), kPrefsID));
+  _lockscreenString = [_userDefaults objectForKey:@"lsString"];
+  _passcodeString = [_userDefaults objectForKey:@"psString"];
 
   if([_lockscreenString containsString:@"LLCount"]) {
     _lockscreenString = [_lockscreenString stringByReplacingOccurrencesOfString:@"LLCount" withString:[NSString stringWithFormat:@"%d", _loginAttempts]];
   }
 
   if([_lockscreenString containsString:@"LLDate"]) {
-    NSString *dateFormat = !CFPreferencesCopyAppValue(CFSTR("lsDateFormat"), kPrefsID) ? kDefaultPS : CFBridgingRelease(CFPreferencesCopyAppValue(CFSTR("lsDateFormat"), kPrefsID));
+    NSString *dateFormat = [_userDefaults objectForKey:@"lsDateFormat"];
     NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
     [dateFormatter setDateFormat:dateFormat];
-    _lockscreenString = [_lockscreenString stringByReplacingOccurrencesOfString:@"LLDate" withString:[dateFormatter stringFromDate:_lastLoginDate]];
+    _lockscreenString = [_lockscreenString stringByReplacingOccurrencesOfString:@"LLDate" withString:_lastLoginDate ? [dateFormatter stringFromDate:_lastLoginDate] : @"never"];
   }
 
   if([_passcodeString containsString:@"LLCount"]) {
@@ -83,14 +96,11 @@
   }
 
   if([_passcodeString containsString:@"LLDate"]) {
-    NSString *dateFormat = !CFPreferencesCopyAppValue(CFSTR("psDateFormat"), kPrefsID) ? kDefaultDatePS : CFBridgingRelease(CFPreferencesCopyAppValue(CFSTR("psDateFormat"), kPrefsID));
+    NSString *dateFormat = [_userDefaults objectForKey:@"pCsDateFormat"];
     NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
     [dateFormatter setDateFormat:dateFormat];
-    _passcodeString = [_passcodeString stringByReplacingOccurrencesOfString:@"LLDate" withString:[dateFormatter stringFromDate:_lastLoginDate]];
+    _passcodeString = [_passcodeString stringByReplacingOccurrencesOfString:@"LLDate" withString:_lastLoginDate ? [dateFormatter stringFromDate:_lastLoginDate] : @"never"];
   }
-
-  [_lockscreenString retain];
-  [_passcodeString retain];
 
 }
 @end

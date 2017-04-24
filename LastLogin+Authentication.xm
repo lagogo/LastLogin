@@ -75,16 +75,13 @@
 %hook SBLockScreenManager
 
 -(BOOL)_attemptUnlockWithPasscode:(id)arg1 finishUIUnlock:(BOOL)arg2 {
-
-	[LastLoginTracker sharedInstance].loginAttempts++;
-	return %orig;
+  [LastLoginTracker sharedInstance].loginAttempts++;
+  return %orig;
 }
 
 -(void)_finishUIUnlockFromSource:(int)arg1 withOptions:(id)arg2 {
-
-	%orig;
+  %orig;
   [LastLoginTracker sharedInstance].lastLoginDate = [NSDate date];
-
 }
 
 %end

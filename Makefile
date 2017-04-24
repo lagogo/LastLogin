@@ -5,6 +5,7 @@ FINALPACKAGE = 1
 include $(THEOS)/makefiles/common.mk
 
 TWEAK_NAME = LastLogin
+LastLogin_CFLAGS = -fobjc-arc
 LastLogin_FILES = $(wildcard *.xm) $(wildcard *.m)
 
 include $(THEOS_MAKE_PATH)/tweak.mk

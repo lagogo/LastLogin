@@ -28,12 +28,21 @@
 
 - (instancetype)init {
   if(self = [super init]) {
-    _lastLoginDate = !CFPreferencesCopyAppValue(CFSTR("lastLoginDate"), kPrefsID) ? [NSDate date] : CFBridgingRelease(CFPreferencesCopyAppValue(CFSTR("lastLoginDate"), kPrefsID));
+
     _loginAttempts = 0;
-    _tracksMesaAttempts = !CFPreferencesCopyAppValue(CFSTR("trackMesa"), kPrefsID) ? YES : [CFBridgingRelease(CFPreferencesCopyAppValue(CFSTR("trackMesa"), kPrefsID)) boolValue];
-    [self updateLabelStrings];
+    _lastLoginDate = !CFPreferencesCopyAppValue(CFSTR("lastLoginDate"), kPrefsID) ? [NSDate date] : CFBridgingRelease(CFPreferencesCopyAppValue(CFSTR("lastLoginDate"), kPrefsID));
+
+    [self syncPrefs];
   }
   return self;
+}
+
+- (void)syncPrefs {
+  _displayOnLS = !CFPreferencesCopyAppValue(CFSTR("displaysActionLabel"), kPrefsID) ? NO : [CFBridgingRelease(CFPreferencesCopyAppValue(CFSTR("displaysActionLabel"), kPrefsID)) boolValue];
+  _displayOnPS = !CFPreferencesCopyAppValue(CFSTR("displaysPasscodeLabel"), kPrefsID) ? NO : [CFBridgingRelease(CFPreferencesCopyAppValue(CFSTR("displaysPasscodeLabel"), kPrefsID)) boolValue];
+  _tracksMesaAttempts = !CFPreferencesCopyAppValue(CFSTR("trackMesa"), kPrefsID) ? NO : [CFBridgingRelease(CFPreferencesCopyAppValue(CFSTR("trackMesa"), kPrefsID)) boolValue];
+
+  [self updateLabelStrings];
 }
 
 - (void)setLastLoginDate:(NSDate *)date {
@@ -51,6 +60,9 @@
 }
 
 - (void)updateLabelStrings {
+
+  _lockscreenString = nil;
+  _passcodeString = nil;
 
   _lockscreenString = !CFPreferencesCopyAppValue(CFSTR("lsString"), kPrefsID) ? kDefaultLS : CFBridgingRelease(CFPreferencesCopyAppValue(CFSTR("lsString"), kPrefsID));
   _passcodeString = !CFPreferencesCopyAppValue(CFSTR("psString"), kPrefsID) ? kDefaultPS : CFBridgingRelease(CFPreferencesCopyAppValue(CFSTR("psString"), kPrefsID));
@@ -79,6 +91,6 @@
 
   [_lockscreenString retain];
   [_passcodeString retain];
-  
+
 }
 @end

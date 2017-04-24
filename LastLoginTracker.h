@@ -9,6 +9,8 @@
 
 @interface LastLoginTracker : NSObject
 
+@property (nonatomic, assign) BOOL displayOnLS;
+@property (nonatomic, assign) BOOL displayOnPS;
 @property (nonatomic, assign) BOOL tracksMesaAttempts;
 @property (nonatomic, assign) int loginAttempts;
 @property (nonatomic, strong) NSDate *lastLoginDate;
@@ -17,5 +19,7 @@
 @property (nonatomic, strong) NSString *passcodeString;
 
 + (instancetype)sharedInstance;
+
+- (void)syncPrefs;
 
 @end

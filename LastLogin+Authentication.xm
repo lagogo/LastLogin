@@ -8,6 +8,7 @@
 //
 
 #import "LastLoginTracker.h"
+#import <version.h>
 
 %group iOS_10
 
@@ -89,9 +90,16 @@
 %end
 %end
 
+static void updateSettings(CFNotificationCenterRef center, void *observer, CFStringRef name, const void *object, CFDictionaryRef userInfo) {
+  [[LastLoginTracker sharedInstance] syncPrefs];
+}
+
 %ctor {
   if ([[NSBundle mainBundle].bundleIdentifier isEqualToString:@"com.apple.springboard"]) {
+
     %init;
+    CFNotificationCenterAddObserver(CFNotificationCenterGetDarwinNotifyCenter(), NULL, updateSettings, CFSTR("com.cpdigitaldarkroom.lastlogin.settings"), NULL, CFNotificationSuspensionBehaviorDeliverImmediately);
+
     if(IS_IOS_OR_NEWER(iOS_10_0)) {
       %init(iOS_10);
     } else {

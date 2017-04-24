@@ -1,4 +1,3 @@
-THEOS_PACKAGE_DIR_NAME = debs
 TARGET = :clang
 ARCHS = armv7 arm64
 FINALPACKAGE = 1
@@ -6,7 +5,7 @@ FINALPACKAGE = 1
 include $(THEOS)/makefiles/common.mk
 
 TWEAK_NAME = LastLogin
-LastLogin_FILES = LastLogin.xm
+LastLogin_FILES = $(wildcard *.xm) $(wildcard *.m)
 
 include $(THEOS_MAKE_PATH)/tweak.mk
 

@@ -1,9 +1,9 @@
 Package: com.cpdigitaldarkroom.lastlogin
 Name: LastLogin
 Depends: mobilesubstrate
-Version: 0.0.1
+Version: 1.0
 Architecture: iphoneos-arm
-Description: Lockscreen Login Attempts
+Description: LockScreen Login Attempts
 Maintainer: CP Digital Darkroom <tweaks@cpdigitaldarkroom.support>
 Author: CP Digital Darkroom <tweaks@cpdigitaldarkroom.support>
 Section: Tweaks

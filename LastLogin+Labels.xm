@@ -27,6 +27,9 @@
 
 -(void)updateStatusText:(NSString *)status subtitle:(NSString *)subtitle animated:(BOOL)animated {
 
+  if(![LastLoginTracker sharedInstance].displayOnPS)
+    return %org(status, subtitle, animated);
+
   if(status) {
 
     /*!
@@ -87,7 +90,7 @@
 
 	%orig;
 
-  if([LastLoginTracker sharedInstance].lockscreenString) {
+  if([LastLoginTracker sharedInstance].displayOnLS) {
     [self.callToActionLabel setText:[LastLoginTracker sharedInstance].lockscreenString];
     [self.callToActionLabel sizeToFit];
   }
@@ -101,7 +104,7 @@
   @brief Same concept as for iOS 10
 !*/
 - (NSString *)_defaultSlideToUnlockText {
-  return [LastLoginTracker sharedInstance].lockscreenString;
+  return [LastLoginTracker sharedInstance].displayOnLS ? [LastLoginTracker sharedInstance].lockscreenString : %orig;
 }
 %end
 %end

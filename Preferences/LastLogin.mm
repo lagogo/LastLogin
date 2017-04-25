@@ -1,5 +1,4 @@
 #import "CPLastLoginPreferences.h"
-#import <MobileGestalt/MobileGestalt.h>
 
 @interface LastLoginListController: PSListController
 @property (nonatomic, strong) NSMutableArray *lockscreenSpecs;

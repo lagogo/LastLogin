@@ -7,7 +7,6 @@ BUNDLE_NAME = LastLogin
 LastLogin_FILES = LastLogin.mm $(wildcard *.m)
 LastLogin_INSTALL_PATH = /Library/PreferenceBundles
 LastLogin_PRIVATE_FRAMEWORKS = Preferences
-LastLogin_LDFLAGS = -lMobileGestalt
 
 include $(THEOS_MAKE_PATH)/bundle.mk
 

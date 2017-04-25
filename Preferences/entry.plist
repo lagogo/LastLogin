@@ -1,0 +1,10 @@
+{
+    entry = {
+	bundle = LastLogin;
+	cell = PSLinkCell;
+	detail = LastLoginListController;
+	icon = images/LastLogin.png;
+	isController = 1;
+	label = LastLogin;
+    };
+}

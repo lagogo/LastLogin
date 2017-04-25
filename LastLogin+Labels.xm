@@ -28,7 +28,7 @@
 -(void)updateStatusText:(NSString *)status subtitle:(NSString *)subtitle animated:(BOOL)animated {
 
   if(![LastLoginTracker sharedInstance].displayOnPS)
-    return %org(status, subtitle, animated);
+    return %orig(status, subtitle, animated);
 
   if(status) {
 
